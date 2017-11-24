@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">照片管理器</string>
+    <string name="edit_message">请输入消息</string>
+    <string name="button_send">发送</string>
+</resources>
