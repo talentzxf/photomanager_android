@@ -61,11 +61,11 @@ public class PhotoView extends AppCompatActivity {
         LinearLayout listLayout = (LinearLayout) findViewById(R.id.img_linearlayout);
 
         ImageView imgView = new ImageView(this);
-        ImageLoader.getInstance().displayImage("http://10.86.48.54:8000/img/3/?width=300&height=300", imgView, new SimpleImageLoadingListener() {
+        ImageLoader.getInstance().displayImage("http://10.86.48.54:8000/img/3/?height=150", imgView, new SimpleImageLoadingListener() {
         });
 
         ImageView imgView2 = new ImageView(this);
-        ImageLoader.getInstance().displayImage("http://10.86.48.54:8000/img/1/?width=300&height=300", imgView2, new SimpleImageLoadingListener() {
+        ImageLoader.getInstance().displayImage("http://10.86.48.54:8000/img/1/?height=150", imgView2, new SimpleImageLoadingListener() {
         });
 
         listLayout.addView(imgView);
