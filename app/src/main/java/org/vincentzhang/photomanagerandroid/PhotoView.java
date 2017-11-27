@@ -1,27 +1,31 @@
 package org.vincentzhang.photomanagerandroid;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-public class PhotoView extends AppCompatActivity {
+public class PhotoView extends Activity {
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
 
     private class WebViewOverrideUrl extends WebViewClient {
@@ -58,32 +62,78 @@ public class PhotoView extends AppCompatActivity {
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config.build());
 
-        LinearLayout listLayout = (LinearLayout) findViewById(R.id.img_linearlayout);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+//        layoutManager.setJustifyContent(JustifyContent.FLEX_END);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(new RecyclerView.Adapter() {
 
-        ImageView imgView = new ImageView(this);
-        ImageLoader.getInstance().displayImage("http://10.86.48.54:8000/img/3/?height=150", imgView, new SimpleImageLoadingListener() {
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                ImageView view = new ImageView(parent.getContext());
+                RecyclerView.ViewHolder vh = new RecyclerView.ViewHolder(view) {
+                };
+                return vh;
+            }
+
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+                ImageLoader.getInstance().displayImage("http://10.86.48.54:8000/img/" + (291 + position) + "?height=80", (ImageView) holder.itemView, new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+
+                    }
+                });
+            }
+
+            @Override
+            public int getItemCount() {
+                return 574 - 291 + 1;
+            }
         });
 
-        ImageView imgView2 = new ImageView(this);
-        ImageLoader.getInstance().displayImage("http://10.86.48.54:8000/img/1/?height=150", imgView2, new SimpleImageLoadingListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                View view = recyclerView.getChildAt(1);
+                Rect scrollBounds = new Rect();
+                recyclerView.getHitRect(scrollBounds);
+                if (view.getLocalVisibleRect(scrollBounds)) {
+                    Log.i("Scrolled", "View is shown." + view.getVisibility());
+                } else {
+                    Log.i("Scrolled", "View is not shown"+ view.getVisibility());
+                }
+            }
         });
 
-        listLayout.addView(imgView);
-        listLayout.addView(imgView2);
+
     }
-
 
     /**
      * Called when the user taps the Send button
      */
     public void sendMessage(View view) {
-        // Do something in response to button
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        EditText editText = (EditText) findViewById(R.id.editText);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-
     }
 
 }
